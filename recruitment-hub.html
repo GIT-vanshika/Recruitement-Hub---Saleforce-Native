@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruitment Hub — Salesforce Native V1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nav:220px;
+  --hdr:54px;
+  --serif:'Instrument Serif',serif;
+  --sans:'Geist',sans-serif;
+  --mono:'Geist Mono',monospace;
+  --bg:#F5F4EF;
+  --surface:#FFFFFF;
+  --surface2:#F9F8F4;
+  --border:rgba(0,0,0,0.07);
+  --border2:rgba(0,0,0,0.13);
+  --text:#18171A;
+  --muted:#72706B;
+  --accent:#1B4FD8;
+  --accent-bg:#EEF3FF;
+  --accent-text:#1B4FD8;
+  --green:#0A6245;
+  --green-bg:#E8F5EF;
+  --amber:#7A4A00;
+  --amber-bg:#FEF3DC;
+  --red:#961414;
+  --red-bg:#FEF0F0;
+  --purple:#4B3FAF;
+  --purple-bg:#EFEDFF;
+  --teal:#0B5F5C;
+  --teal-bg:#E5F4F3;
+  --r:8px;
+  --r-sm:5px;
+  --r-lg:12px;
+  --shadow:0 1px 4px rgba(0,0,0,0.07),0 4px 16px rgba(0,0,0,0.05);
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.06);
+  --transition:0.18s ease;
+}
+html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--sans);cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:var(--sans)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ===== LAYOUT ===== */
+.app{display:flex;min-height:100vh}
+.sidebar{width:var(--nav);min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:200;transition:transform var(--transition)}
+.main{margin-left:var(--nav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* ===== SIDEBAR ===== */
+.logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-mark{width:30px;height:30px;background:var(--text);border-radius:7px;display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:6px;flex-shrink:0}
+.logo-mark span{background:var(--bg);border-radius:1px;display:block}
+.logo-text{}
+.logo-name{font-size:12px;font-weight:700;letter-spacing:0.02em;line-height:1.2}
+.logo-sub{font-size:10px;color:var(--muted);letter-spacing:0.04em;margin-top:1px}
+.nav-section{padding:14px 10px 6px}
+.nav-label{font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0 8px 6px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r-sm);font-size:12.5px;font-weight:500;color:var(--muted);transition:all var(--transition);width:100%;border:none;background:none;cursor:pointer;text-align:left;position:relative}
+.nav-item:hover{background:var(--bg);color:var(--text)}
+.nav-item.active{background:var(--accent-bg);color:var(--accent);font-weight:600}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:.75}
+.nav-item.active svg{opacity:1}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:700;background:var(--accent);color:#fff;border-radius:20px;padding:1px 6px;min-width:18px;text-align:center;line-height:1.6}
+.nav-badge.warn{background:var(--red)}
+.nav-user{margin-top:auto;border-top:1px solid var(--border);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.nav-user-ava{width:30px;height:30px;border-radius:50%;background:var(--accent-bg);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.nav-user-name{font-size:12px;font-weight:600;line-height:1.3}
+.nav-user-role{font-size:10px;color:var(--muted)}
+
+/* ===== TOPBAR ===== */
+.topbar{height:var(--hdr);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 22px;gap:12px;position:sticky;top:0;z-index:100}
+.topbar-title{font-size:14px;font-weight:700;flex:1}
+.topbar-meta{font-size:11.5px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text);transition:all var(--transition);white-space:nowrap}
+.btn:hover{background:var(--bg);border-color:var(--border2)}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{opacity:.88;background:var(--accent)}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-ghost{border-color:transparent;background:transparent}
+.btn-ghost:hover{background:var(--bg);border-color:var(--border)}
+.btn svg{width:11px;height:11px}
+
+/* ===== CONTENT ===== */
+.content{padding:22px;flex:1}
+.page{display:none;animation:fadeUp .2s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== TABS ===== */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto}
+.tab{padding:8px 14px;font-size:12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;transition:all var(--transition);white-space:nowrap;margin-bottom:-1px;user-select:none}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:hover:not(.active){color:var(--text)}
+
+/* ===== BADGES ===== */
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2.5px 7px;border-radius:20px;white-space:nowrap;letter-spacing:0.01em}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-blue{background:var(--accent-bg);color:var(--accent)}
+.badge-purple{background:var(--purple-bg);color:var(--purple)}
+.badge-teal{background:var(--teal-bg);color:var(--teal)}
+.badge-gray{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+
+/* ===== STAT CARDS ===== */
+.stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;box-shadow:var(--shadow-sm)}
+.stat-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.stat-value{font-size:26px;font-weight:700;font-family:var(--mono);line-height:1;color:var(--text)}
+.stat-delta{font-size:11px;margin-top:5px;display:flex;align-items:center;gap:3px}
+.delta-up{color:var(--green)}
+.delta-down{color:var(--red)}
+.delta-neutral{color:var(--muted)}
+.stat-track{height:3px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden}
+.stat-fill{height:100%;border-radius:2px;transition:width .6s ease}
+
+/* ===== PANELS ===== */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
+.panel-hdr{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.panel-title{font-size:12.5px;font-weight:700;flex:1}
+.panel-link{font-size:11px;color:var(--accent);cursor:pointer;font-weight:600}
+.panel-link:hover{text-decoration:underline}
+.two-col{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:14px;margin-bottom:20px}
+.three-col{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:20px}
+
+/* ===== TABLE ===== */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface2)}
+.tbl td{font-size:12px;padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr{cursor:pointer;transition:background var(--transition)}
+.tbl tbody tr:hover td{background:var(--bg)}
+.td-primary{font-weight:700;font-size:12.5px}
+.td-secondary{color:var(--muted);font-size:11px;margin-top:1px}
+
+/* ===== SCORE BAR ===== */
+.score-wrap{display:flex;align-items:center;gap:7px}
+.score-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;min-width:44px}
+.score-fill{height:100%;border-radius:2px;transition:width .5s ease}
+.score-num{font-size:11.5px;font-weight:700;min-width:22px;font-family:var(--mono)}
+
+/* ===== PIPELINE BARS ===== */
+.pipe-list{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.pipe-row{display:flex;flex-direction:column;gap:4px}
+.pipe-meta{display:flex;justify-content:space-between;align-items:center}
+.pipe-stage-name{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.pipe-count{font-size:11px;font-weight:700;font-family:var(--mono);color:var(--text)}
+.pipe-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.pipe-fill{height:100%;border-radius:3px;transition:width .6s ease}
+
+/* ===== BAR CHART ===== */
+.bar-chart{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-label{font-size:11px;color:var(--muted);width:100px;flex-shrink:0;text-align:right}
+.bar-track{flex:1;height:20px;background:var(--surface2);border-radius:4px;overflow:hidden;position:relative;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:8px;transition:width .6s ease}
+.bar-fill span{font-size:10.5px;font-weight:700;color:#fff}
+
+/* ===== CALENDAR ===== */
+.cal-list{padding:14px 16px;display:flex;flex-direction:column;gap:0}
+.cal-item{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--border)}
+.cal-item:last-child{border-bottom:none}
+.cal-date-box{width:38px;flex-shrink:0;text-align:center}
+.cal-day-num{font-size:20px;font-weight:700;font-family:var(--mono);line-height:1.1;color:var(--text)}
+.cal-day-name{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.cal-events{flex:1;display:flex;flex-direction:column;gap:5px}
+.cal-ev{border-left:2px solid var(--accent);background:var(--accent-bg);border-radius:0 4px 4px 0;padding:5px 8px}
+.cal-ev.green{border-left-color:var(--green);background:var(--green-bg)}
+.cal-ev.amber{border-left-color:var(--amber);background:var(--amber-bg)}
+.cal-ev.purple{border-left-color:var(--purple);background:var(--purple-bg)}
+.cal-ev-title{font-size:11.5px;font-weight:700;color:var(--accent)}
+.cal-ev.green .cal-ev-title{color:var(--green)}
+.cal-ev.amber .cal-ev-title{color:var(--amber)}
+.cal-ev.purple .cal-ev-title{color:var(--purple)}
+.cal-ev-meta{font-size:10.5px;color:var(--muted);margin-top:1px}
+
+/* ===== STALE LIST ===== */
+.stale-item{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background var(--transition)}
+.stale-item:last-child{border-bottom:none}
+.stale-item:hover{background:var(--bg)}
+.stale-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.stale-name{font-size:12px;font-weight:700;flex:1}
+.stale-stage{font-size:10.5px;color:var(--muted)}
+.stale-days{font-size:12px;font-weight:700;font-family:var(--mono)}
+
+/* ===== AI PANEL ===== */
+.ai-list{padding:0}
+.ai-item{display:flex;gap:11px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background var(--transition)}
+.ai-item:hover{background:var(--bg)}
+.ai-item:last-child{border-bottom:none}
+.ai-ava{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.ai-name{font-size:12.5px;font-weight:700}
+.ai-role{font-size:11px;color:var(--muted);margin-top:1px}
+.ai-summary{font-size:11px;color:var(--text);margin-top:5px;line-height:1.55}
+.risk-tag{display:inline-flex;align-items:center;font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--amber-bg);color:var(--amber);margin-right:4px;margin-top:4px}
+
+/* ===== APPROVAL ===== */
+.approval-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.approval-item:last-child{border-bottom:none}
+.approval-body{flex:1;min-width:0}
+.approval-name{font-size:13px;font-weight:700}
+.approval-detail{font-size:11px;color:var(--muted);margin-top:2px}
+.approval-note{font-size:11px;margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.approval-actions{display:flex;gap:6px;margin-top:10px}
+.btn-approve{background:var(--green-bg);color:var(--green);border-color:transparent}
+.btn-approve:hover{background:var(--green);color:#fff}
+.btn-reject{background:var(--red-bg);color:var(--red);border-color:transparent}
+.btn-reject:hover{background:var(--red);color:#fff}
+.approval-salary{font-size:16px;font-weight:700;font-family:var(--mono);text-align:right;white-space:nowrap}
+
+/* ===== SKILLS ===== */
+.skill-tags{display:flex;flex-wrap:wrap;gap:5px}
+.skill-tag{font-size:10.5px;font-weight:600;padding:2.5px 8px;border-radius:20px;background:var(--bg);border:1px solid var(--border);color:var(--text)}
+.skill-tag.match{background:var(--accent-bg);border-color:#C0CFFF;color:var(--accent)}
+
+/* ===== RATING DOTS ===== */
+.rdots{display:flex;gap:3px;align-items:center}
+.rdot{width:7px;height:7px;border-radius:50%}
+.rdot.on{background:var(--accent)}
+.rdot.off{background:var(--border)}
+
+/* ===== GUARDRAIL ===== */
+.guardrail-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:var(--r-sm);margin-bottom:8px}
+.guardrail-item:last-child{margin-bottom:0}
+.guardrail-title{font-size:12px;font-weight:700}
+.guardrail-sub{font-size:10.5px;color:var(--muted);margin-top:1px}
+
+/* ===== JOB CARDS ===== */
+.job-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;cursor:pointer;transition:all var(--transition);box-shadow:var(--shadow-sm)}
+.job-card:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.job-dept{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.job-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.job-loc{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-bottom:10px}
+.job-salary{font-size:11.5px;font-weight:700;color:var(--green);font-family:var(--mono);margin-bottom:8px}
+.job-divider{border:none;border-top:1px solid var(--border);margin:10px 0}
+.job-stats{display:flex;gap:0}
+.job-stat{flex:1;text-align:center;padding:0 8px}
+.job-stat:not(:last-child){border-right:1px solid var(--border)}
+.job-stat-num{font-size:17px;font-weight:700;font-family:var(--mono);color:var(--text)}
+.job-stat-label{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:1px}
+.job-progress{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:10px}
+.job-progress-fill{height:100%;border-radius:2px;background:var(--accent)}
+
+/* ===== DETAIL SLIDE PANEL ===== */
+.overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.35);align-items:flex-start;justify-content:flex-end}
+.overlay.open{display:flex}
+.slide-panel{width:500px;max-width:95vw;height:100vh;overflow-y:auto;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .24s cubic-bezier(.4,0,.2,1);box-shadow:-4px 0 24px rgba(0,0,0,.1)}
+.overlay.open .slide-panel{transform:translateX(0)}
+.sp-hdr{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;gap:14px;align-items:flex-start;position:relative}
+.sp-close{position:absolute;top:14px;right:16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:4px 10px;font-size:11.5px;font-weight:600;color:var(--muted);cursor:pointer;transition:all var(--transition)}
+.sp-close:hover{background:var(--border);color:var(--text)}
+.sp-ava{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
+.sp-name{font-size:17px;font-weight:700;line-height:1.2}
+.sp-role{font-size:12px;color:var(--muted);margin-top:3px}
+.sp-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.sp-section{padding:14px 20px;border-bottom:1px solid var(--border)}
+.sp-section:last-child{border-bottom:none}
+.sp-section-title{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.ai-score-row{display:flex;align-items:center;gap:14px}
+.ai-circle{width:66px;height:66px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.ai-circle-num{font-size:22px;font-weight:700;font-family:var(--mono);line-height:1}
+.ai-circle-lbl{font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:1px}
+.ai-sub-scores{flex:1}
+.ai-sub-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ai-sub-row:last-child{margin-bottom:0}
+.ai-sub-lbl{font-size:11px;color:var(--muted);width:110px;flex-shrink:0}
+.iv-list{display:flex;flex-direction:column;gap:7px}
+.iv-row{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 12px;display:flex;align-items:center;gap:10px}
+.iv-round{font-size:12px;font-weight:700;flex:0 0 80px}
+.iv-date{font-size:11px;color:var(--muted);flex:0 0 55px}
+.iv-ratings{display:flex;flex-direction:column;gap:3px;flex:1}
+.iv-rating-row{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.sp-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ===== SEARCH / FILTER BAR ===== */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.search-box{height:34px;border:1px solid var(--border2);border-radius:var(--r-sm);padding:0 12px;font-size:12px;background:var(--surface);color:var(--text);flex:1;max-width:260px;transition:border-color var(--transition)}
+.search-box:focus{outline:none;border-color:var(--accent)}
+.filter-sel{height:34px;border:1px solid var(--border2);border-radius:var(--r-sm);padding:0 10px;font-size:12px;background:var(--surface);color:var(--text);cursor:pointer;transition:border-color var(--transition)}
+.filter-sel:focus{outline:none;border-color:var(--accent)}
+.ml-auto{margin-left:auto}
+
+/* ===== TABLE PANEL ===== */
+.tbl-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
+.tbl-panel .tbl{table-layout:fixed}
+.tbl-panel .tbl th:nth-child(1){width:22%}
+.tbl-panel .tbl th:nth-child(2){width:18%}
+.tbl-panel .tbl th:nth-child(3){width:13%}
+.tbl-panel .tbl th:nth-child(4){width:11%}
+.tbl-panel .tbl th:nth-child(5){width:22%}
+.tbl-panel .tbl th:nth-child(6){width:14%}
+.td-trunc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0}
+
+/* ===== MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.4);align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--r-lg);padding:24px;width:440px;max-width:95vw;box-shadow:var(--shadow);animation:modalIn .2s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:18px}
+.form-row{margin-bottom:14px}
+.form-label{font-size:11.5px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px}
+.form-input,.form-select,.form-textarea{width:100%;height:36px;border:1px solid var(--border2);border-radius:var(--r-sm);padding:0 11px;font-size:12.5px;background:var(--surface);color:var(--text);transition:border-color var(--transition);font-family:var(--sans)}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--accent)}
+.form-textarea{height:80px;padding:9px 11px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+
+/* ===== TOAST ===== */
+.toast-area{position:fixed;bottom:20px;right:20px;z-index:3000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--text);color:var(--surface);padding:10px 16px;border-radius:var(--r);font-size:12.5px;font-weight:500;pointer-events:auto;animation:toastIn .25s ease;box-shadow:var(--shadow);display:flex;align-items:center;gap:8px}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.toast.success::before{content:'✓';color:#6EE09F;font-weight:700}
+.toast.error::before{content:'✕';color:#F09595;font-weight:700}
+.toast.info::before{content:'ℹ';color:#85B7EB;font-weight:700}
+
+/* ===== EMPTY STATE ===== */
+.empty-state{padding:40px;text-align:center;color:var(--muted);font-size:13px}
+.empty-state h3{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+
+/* ===== OVERRIDE LOG ===== */
+.ovr-item{padding:10px 16px;border-bottom:1px solid var(--border);font-size:11.5px}
+.ovr-item:last-child{border-bottom:none}
+.ovr-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.ovr-user{font-weight:700}
+.ovr-time{color:var(--muted);font-size:10.5px;font-family:var(--mono)}
+.ovr-change{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.ovr-just{margin-top:4px;color:var(--text);font-style:italic}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .two-col{grid-template-columns:1fr}
+  .three-col{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .three-col{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<nav class="sidebar" id="sidebar">
+  <div class="logo">
+    <div class="logo-mark">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="logo-text">
+      <div class="logo-name">Recruitment Hub</div>
+      <div class="logo-sub">Salesforce Native · V1</div>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Workspace</div>
+    <button class="nav-item active" onclick="nav('dashboard',this)">
+      <svg viewBox="0 0 15 15" fill="currentColor"><rect x="1" y="1" width="5.5" height="5.5" rx="1.5"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1.5"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1.5"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" onclick="nav('applications',this)">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M2 2a1 1 0 011-1h9a1 1 0 011 1v11a1 1 0 01-1 1H3a1 1 0 01-1-1V2zm2 2v1h7V4H4zm0 3v1h7V7H4zm0 3v1h4v-1H4z"/></svg>
+      Applications
+      <span class="nav-badge">20</span>
+    </button>
+    <button class="nav-item" onclick="nav('candidates',this)">
+      <svg viewBox="0 0 15 15" fill="currentColor"><circle cx="5.5" cy="4.5" r="2.8"/><path d="M0 12.5c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5H0z"/><circle cx="11.5" cy="4.5" r="2.2"/><path d="M9.5 12.5c0-2.2.9-4 2.5-5.1v5.1h-2.5z"/></svg>
+      Candidates
+    </button>
+    <button class="nav-item" onclick="nav('jobs',this)">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M5.5 1.5a2 2 0 00-2 2H1.5a1 1 0 00-1 1v8a1 1 0 001 1h12a1 1 0 001-1v-8a1 1 0 00-1-1H11.5a2 2 0 00-2-2h-4zm0 1.5h4a.5.5 0 010 1h-4a.5.5 0 010-1z"/></svg>
+      Job Openings
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Actions</div>
+    <button class="nav-item" onclick="nav('approvals',this)">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M7.5 1a6.5 6.5 0 100 13A6.5 6.5 0 007.5 1zm3.4 5.3l-3.8 3.8a.8.8 0 01-1.1 0l-1.9-1.9a.8.8 0 011.1-1.1L6.5 8.4l3.2-3.2a.8.8 0 011.2 1.1z"/></svg>
+      Offer Approvals
+      <span class="nav-badge warn">2</span>
+    </button>
+    <button class="nav-item" onclick="nav('interviews',this)">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M2.5 1a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V2a1 1 0 00-1-1h-10zm1.5 3h7v1h-7V4zm0 3h7v1h-7V7zm0 3h4v1h-4v-1z"/></svg>
+      Interviews
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Analytics</div>
+    <button class="nav-item" onclick="nav('analytics',this)">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M1 13.5V8.5l3.5-4 3.5 4 3.5-6.5V13.5H1z"/></svg>
+      Pipeline Health
+    </button>
+  </div>
+
+  <div class="nav-user">
+    <div class="nav-user-ava">SR</div>
+    <div>
+      <div class="nav-user-name">Sam Rivera</div>
+      <div class="nav-user-role">Senior Recruiter</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Recruiter Dashboard</div>
+    <div class="topbar-meta">Mon 15 Mar 2026</div>
+    <button class="btn btn-ghost btn-sm" onclick="openAddCandidate()">
+      <svg viewBox="0 0 11 11" fill="currentColor"><path d="M5.5 1v9M1 5.5h9"/></svg>
+      Add Candidate
+    </button>
+    <button class="btn btn-primary btn-sm">
+      <svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5.5 1v6M3 5l2.5 2.5L8 5M1 9.5h9"/></svg>
+      Import CSV
+    </button>
+  </div>
+
+  <div class="content">
+
+  <!-- ══════════════════ PAGE: DASHBOARD ══════════════════ -->
+  <div id="p-dashboard" class="page active">
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Active Applications</div>
+        <div class="stat-value">47</div>
+        <div class="stat-delta delta-up">↑ +8 this week</div>
+        <div class="stat-track"><div class="stat-fill" style="width:72%;background:var(--accent)"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">AI Screened</div>
+        <div class="stat-value">38</div>
+        <div class="stat-delta delta-up">↑ 91% adoption · target ≥90%</div>
+        <div class="stat-track"><div class="stat-fill" style="width:91%;background:var(--purple)"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg Time-to-Screen</div>
+        <div class="stat-value">0.8d</div>
+        <div class="stat-delta delta-up">↑ Target ≤1 day ✓</div>
+        <div class="stat-track"><div class="stat-fill" style="width:80%;background:var(--green)"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Stale Applications</div>
+        <div class="stat-value">3</div>
+        <div class="stat-delta delta-down">↓ >5 days inactive</div>
+        <div class="stat-track"><div class="stat-fill" style="width:6%;background:var(--red)"></div></div>
+      </div>
+    </div>
+
+    <!-- Main row -->
+    <div class="two-col">
+      <!-- Applications table -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <div class="panel-title">My Active Applications</div>
+          <span class="panel-link" onclick="nav('applications',null)">View all →</span>
+        </div>
+        <table class="tbl">
+          <thead><tr><th>Candidate</th><th>Job Opening</th><th>AI Score</th><th>Status</th><th>Recruiter</th></tr></thead>
+          <tbody id="dash-apps"></tbody>
+        </table>
+      </div>
+
+      <!-- Right col -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <!-- Pipeline -->
+        <div class="panel">
+          <div class="panel-hdr"><div class="panel-title">Pipeline by Stage</div></div>
+          <div class="pipe-list">
+            <div class="pipe-row"><div class="pipe-meta"><span class="pipe-stage-name">New</span><span class="pipe-count">5</span></div><div class="pipe-bar"><div class="pipe-fill" style="width:25%;background:var(--muted)"></div></div></div>
+            <div class="pipe-row"><div class="pipe-meta"><span class="pipe-stage-name">Shortlisted</span><span class="pipe-count">11</span></div><div class="pipe-bar"><div class="pipe-fill" style="width:55%;background:var(--accent)"></div></div></div>
+            <div class="pipe-row"><div class="pipe-meta"><span class="pipe-stage-name">Review Required</span><span class="pipe-count">3</span></div><div class="pipe-bar"><div class="pipe-fill" style="width:15%;background:var(--amber)"></div></div></div>
+            <div class="pipe-row"><div class="pipe-meta"><span class="pipe-stage-name">Interview Stage</span><span class="pipe-count">14</span></div><div class="pipe-bar"><div class="pipe-fill" style="width:70%;background:var(--teal)"></div></div></div>
+            <div class="pipe-row"><div class="pipe-meta"><span class="pipe-stage-name">Offer Stage</span><span class="pipe-count">3</span></div><div class="pipe-bar"><div class="pipe-fill" style="width:15%;background:var(--green)"></div></div></div>
+            <div class="pipe-row"><div class="pipe-meta"><span class="pipe-stage-name">Not Qualified</span><span class="pipe-count">6</span></div><div class="pipe-bar"><div class="pipe-fill" style="width:30%;background:var(--red)"></div></div></div>
+          </div>
+        </div>
+        <!-- Stale -->
+        <div class="panel">
+          <div class="panel-hdr"><div class="panel-title" style="color:var(--red)">⚠ Stale Applications</div><span class="badge badge-red">3</span></div>
+          <div class="stale-item" onclick="openDetail('tom')"><div class="stale-dot" style="background:var(--red)"></div><div><div class="stale-name">Tom Wilson</div><div class="stale-stage">Review Required</div></div><div class="stale-days" style="color:var(--red)">7d</div></div>
+          <div class="stale-item" onclick="openDetail('aisha')"><div class="stale-dot" style="background:var(--amber)"></div><div><div class="stale-name">Aisha Patel</div><div class="stale-stage">Shortlisted</div></div><div class="stale-days" style="color:var(--amber)">6d</div></div>
+          <div class="stale-item" onclick="openDetail('alex')"><div class="stale-dot" style="background:var(--amber)"></div><div><div class="stale-name">Alex Petrov</div><div class="stale-stage">New — AI Pending</div></div><div class="stale-days" style="color:var(--amber)">5d</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="two-col">
+      <!-- Calendar -->
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title">Upcoming Interviews · Next 7 Days</div><span class="panel-link" onclick="nav('interviews',null)">Full calendar →</span></div>
+        <div class="cal-list">
+          <div class="cal-item"><div class="cal-date-box"><div class="cal-day-num">16</div><div class="cal-day-name">Tue</div></div><div class="cal-events"><div class="cal-ev"><div class="cal-ev-title">James O'Brien — Technical Round</div><div class="cal-ev-meta">2:00 PM · In-Person · Full-Stack Eng · HM User 1</div></div></div></div>
+          <div class="cal-item"><div class="cal-date-box"><div class="cal-day-num">17</div><div class="cal-day-name">Wed</div></div><div class="cal-events"><div class="cal-ev green"><div class="cal-ev-title">Fatima Al-Hassan — Technical</div><div class="cal-ev-meta">10:00 AM · Video · Data Analyst · HM User 3</div></div><div class="cal-ev amber"><div class="cal-ev-title">Olivia Martinez — Screen</div><div class="cal-ev-meta">3:30 PM · Phone · Sr Salesforce Dev</div></div></div></div>
+          <div class="cal-item"><div class="cal-date-box"><div class="cal-day-num">19</div><div class="cal-day-name">Fri</div></div><div class="cal-events"><div class="cal-ev purple"><div class="cal-ev-title">Mei Tanaka — Final Round</div><div class="cal-ev-meta">11:00 AM · Video · Eng Manager · HM User 2</div></div></div></div>
+        </div>
+      </div>
+      <!-- Score chart -->
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title">AI Score Distribution</div></div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">High (≥75)</div><div class="bar-track"><div class="bar-fill" style="width:63%;background:var(--green)"><span>14</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Medium (50–74)</div><div class="bar-track"><div class="bar-fill" style="width:27%;background:var(--amber)"><span>6</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Low (&lt;50)</div><div class="bar-track"><div class="bar-fill" style="width:18%;background:var(--red)"><span>4</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Not Scored</div><div class="bar-track"><div class="bar-fill" style="width:9%;background:var(--muted)"><span>2</span></div></div></div>
+        </div>
+        <div style="padding:8px 16px 14px;display:flex;gap:14px;flex-wrap:wrap">
+          <span style="font-size:11px;color:var(--muted)">Override rate: <strong style="color:var(--text)">11%</strong></span>
+          <span style="font-size:11px;color:var(--muted)">Avg score: <strong style="color:var(--text)">73.4</strong></span>
+          <span style="font-size:11px;color:var(--muted)">AI errors: <strong style="color:var(--green)">0</strong></span>
+        </div>
+      </div>
+    </div>
+  </div><!-- /dashboard -->
+
+  <!-- ══════════════════ PAGE: APPLICATIONS ══════════════════ -->
+  <div id="p-applications" class="page">
+    <div class="tabs">
+      <div class="tab active" onclick="filterApps('all',this)">All (20)</div>
+      <div class="tab" onclick="filterApps('New',this)">New (5)</div>
+      <div class="tab" onclick="filterApps('Review Required',this)">Review Required (3)</div>
+      <div class="tab" onclick="filterApps('interview',this)">Interview Stage (6)</div>
+      <div class="tab" onclick="filterApps('offer',this)">Offer Stage (3)</div>
+      <div class="tab" onclick="filterApps('closed',this)">Closed (3)</div>
+    </div>
+    <div class="filter-bar">
+      <input class="search-box" type="text" placeholder="Search candidates…" id="app-search" oninput="renderAppsTable()">
+      <select class="filter-sel" id="app-job" onchange="renderAppsTable()">
+        <option value="">All Jobs</option>
+        <option>Senior Salesforce Developer</option>
+        <option>Engineering Manager</option>
+        <option>Data Analyst</option>
+        <option>Full-Stack Software Engineer</option>
+        <option>Project Manager</option>
+      </select>
+      <select class="filter-sel" id="app-score" onchange="renderAppsTable()">
+        <option value="">All Scores</option>
+        <option value="high">High (≥75)</option>
+        <option value="medium">Medium (50–74)</option>
+        <option value="low">Low (&lt;50)</option>
+      </select>
+      <div class="ml-auto" style="display:flex;gap:8px">
+        <button class="btn btn-sm">Export</button>
+        <button class="btn btn-primary btn-sm" onclick="bulkScreen()">Bulk AI Screen</button>
+      </div>
+    </div>
+    <div class="tbl-panel">
+      <table class="tbl">
+        <thead><tr><th>Candidate</th><th>Job Opening</th><th>AI Score</th><th>Priority</th><th>Status</th><th>Recruiter</th></tr></thead>
+        <tbody id="apps-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════ PAGE: CANDIDATES ══════════════════ -->
+  <div id="p-candidates" class="page">
+    <div class="filter-bar">
+      <input class="search-box" type="text" placeholder="Search by name, email, skill…" id="cand-search" oninput="renderCandTable()">
+      <select class="filter-sel" id="cand-source" onchange="renderCandTable()">
+        <option value="">All Sources</option>
+        <option>LinkedIn</option><option>Referral</option><option>Job Board</option><option>Direct</option>
+      </select>
+      <select class="filter-sel" id="cand-exp" onchange="renderCandTable()">
+        <option value="">All Experience</option>
+        <option value="0-3">0–3 years</option>
+        <option value="3-7">3–7 years</option>
+        <option value="7+">7+ years</option>
+      </select>
+      <div class="ml-auto"><button class="btn btn-primary btn-sm" onclick="openAddCandidate()">+ Add Candidate</button></div>
+    </div>
+    <div class="tbl-panel">
+      <table class="tbl" style="table-layout:fixed">
+        <thead><tr><th style="width:20%">Name</th><th style="width:18%">Company</th><th style="width:12%">Experience</th><th style="width:25%">Key Skills</th><th style="width:15%">Location</th><th style="width:10%">Source</th></tr></thead>
+        <tbody id="cand-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════ PAGE: JOBS ══════════════════ -->
+  <div id="p-jobs" class="page">
+    <div class="filter-bar">
+      <select class="filter-sel"><option>All Departments</option><option>Engineering</option><option>Finance</option><option>Operations</option></select>
+      <select class="filter-sel"><option>Open</option><option>All Status</option><option>Draft</option><option>On Hold</option><option>Closed</option></select>
+      <div class="ml-auto"><button class="btn btn-primary btn-sm" onclick="openAddJob()">+ New Job Opening</button></div>
+    </div>
+    <div class="three-col" id="jobs-grid"></div>
+  </div>
+
+  <!-- ══════════════════ PAGE: APPROVALS ══════════════════ -->
+  <div id="p-approvals" class="page">
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:18px">2 offers pending your review. All offers require approval before extending to candidates.</div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title">Pending Approvals</div><span class="badge badge-amber">2 pending</span></div>
+        <div id="pending-approvals"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title">Recently Decided</div></div>
+        <div class="approval-item">
+          <div class="ai-ava" style="background:var(--green-bg);color:var(--green)">PS</div>
+          <div class="approval-body">
+            <div class="approval-name">Priya Sharma — Sr Salesforce Dev</div>
+            <div class="approval-detail">Offer #OFR-00003 · Standard · Feb 15, 2026</div>
+            <div style="margin-top:6px"><span class="badge badge-green">Approved</span></div>
+          </div>
+          <div><div class="approval-salary" style="color:var(--green)">$155,000</div><div style="font-size:10px;color:var(--muted);margin-top:3px;text-align:right">Accepted by candidate</div></div>
+        </div>
+        <div class="approval-item">
+          <div class="ai-ava" style="background:var(--red-bg);color:var(--red)">MJ</div>
+          <div class="approval-body">
+            <div class="approval-name">Marcus Johnson — Eng Manager</div>
+            <div class="approval-detail">Offer #OFR-00002 · Exception · Rejected Feb 20</div>
+            <div style="margin-top:6px"><span class="badge badge-red">Rejected</span></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;font-style:italic">"Salary exceeds band by $5K. Resubmit at ≤$210K."</div>
+          </div>
+          <div><div class="approval-salary" style="color:var(--red)">$215,000</div><div style="font-size:10px;color:var(--muted);margin-top:3px;text-align:right">Over band +$5K</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ PAGE: INTERVIEWS ══════════════════ -->
+  <div id="p-interviews" class="page">
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title">Scheduled Interviews</div><span class="badge badge-blue">4 upcoming</span></div>
+        <div class="cal-list">
+          <div class="cal-item"><div class="cal-date-box"><div class="cal-day-num">16</div><div class="cal-day-name">Tue</div></div><div class="cal-events"><div class="cal-ev"><div class="cal-ev-title">James O'Brien · Technical Round</div><div class="cal-ev-meta">2:00 PM · In-Person · Full-Stack Eng · HM User 1</div></div></div></div>
+          <div class="cal-item"><div class="cal-date-box"><div class="cal-day-num">17</div><div class="cal-day-name">Wed</div></div><div class="cal-events"><div class="cal-ev green"><div class="cal-ev-title">Fatima Al-Hassan · Technical</div><div class="cal-ev-meta">10:00 AM · Video · Data Analyst · HM User 3</div></div><div class="cal-ev amber"><div class="cal-ev-title">Olivia Martinez · Screen</div><div class="cal-ev-meta">3:30 PM · Phone · Sr Salesforce Dev</div></div></div></div>
+          <div class="cal-item"><div class="cal-date-box"><div class="cal-day-num">19</div><div class="cal-day-name">Fri</div></div><div class="cal-events"><div class="cal-ev purple"><div class="cal-ev-title">Mei Tanaka · Final Round</div><div class="cal-ev-meta">11:00 AM · Video · Eng Manager · HM User 2</div></div></div></div>
+          <div class="cal-item"><div class="cal-date-box"><div class="cal-day-num">20</div><div class="cal-day-name">Sat</div></div><div class="cal-events"><div class="cal-ev"><div class="cal-ev-title">David Thompson · Final Round</div><div class="cal-ev-meta">10:00 AM · Video · Full-Stack Eng · HM User 1</div></div></div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="panel">
+          <div class="panel-hdr"><div class="panel-title">Feedback Pending</div><span class="badge badge-red">2</span></div>
+          <div class="ai-list">
+            <div class="ai-item" onclick="openDetail('james')">
+              <div class="ai-ava" style="background:var(--accent-bg);color:var(--accent)">JO</div>
+              <div><div class="ai-name">James O'Brien</div><div class="ai-role">Technical · Full-Stack Eng · Jan 27</div><div class="ai-summary" style="color:var(--amber)">Feedback not yet submitted.</div></div>
+              <span class="badge badge-amber" style="margin-left:auto;flex-shrink:0">Pending</span>
+            </div>
+            <div class="ai-item" onclick="openDetail('fatima')">
+              <div class="ai-ava" style="background:var(--teal-bg);color:var(--teal)">FA</div>
+              <div><div class="ai-name">Fatima Al-Hassan</div><div class="ai-role">Technical · Data Analyst · Mar 17</div><div class="ai-summary" style="color:var(--amber)">Scheduled — feedback pending.</div></div>
+              <span class="badge badge-amber" style="margin-left:auto;flex-shrink:0">Pending</span>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-hdr"><div class="panel-title">Completed Feedback</div></div>
+          <div class="ai-list">
+            <div class="ai-item" onclick="openDetail('david')">
+              <div class="ai-ava" style="background:var(--green-bg);color:var(--green)">DT</div>
+              <div style="flex:1"><div class="ai-name">David Thompson · Technical</div><div class="ai-role">Jan 23 · In-Person · HM User 1</div><div class="ai-summary">Impressive live coding. TypeScript top-tier.</div><div class="rdots" style="margin-top:4px"><div class="rdot on"></div><div class="rdot on"></div><div class="rdot on"></div><div class="rdot on"></div><div class="rdot on"></div><span style="font-size:10px;color:var(--muted);margin-left:4px">5/5 Technical</span></div></div>
+              <span class="badge badge-green" style="margin-left:8px;flex-shrink:0">Advance</span>
+            </div>
+            <div class="ai-item" onclick="openDetail('marcus')">
+              <div class="ai-ava" style="background:var(--purple-bg);color:var(--purple)">MJ</div>
+              <div style="flex:1"><div class="ai-name">Marcus Johnson · Technical</div><div class="ai-role">Jan 22 · Video · HM User 2</div><div class="ai-summary">Outstanding system design. Deep AWS knowledge.</div><div class="rdots" style="margin-top:4px"><div class="rdot on"></div><div class="rdot on"></div><div class="rdot on"></div><div class="rdot on"></div><div class="rdot on"></div><span style="font-size:10px;color:var(--muted);margin-left:4px">5/5 All criteria</span></div></div>
+              <span class="badge badge-green" style="margin-left:8px;flex-shrink:0">Advance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ PAGE: ANALYTICS ══════════════════ -->
+  <div id="p-analytics" class="page">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Avg Time-to-Screen</div><div class="stat-value">0.8d</div><div class="stat-delta delta-up">Target ≤1d ✓</div><div class="stat-track"><div class="stat-fill" style="width:80%;background:var(--green)"></div></div></div>
+      <div class="stat-card"><div class="stat-label">AI Adoption Rate</div><div class="stat-value">91%</div><div class="stat-delta delta-up">Target ≥90% ✓</div><div class="stat-track"><div class="stat-fill" style="width:91%;background:var(--purple)"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Override Rate</div><div class="stat-value">11%</div><div class="stat-delta delta-up">Target &lt;20% ✓</div><div class="stat-track"><div class="stat-fill" style="width:11%;background:var(--amber)"></div></div></div>
+      <div class="stat-card"><div class="stat-label">Offer Approval Cycle</div><div class="stat-value">1.4d</div><div class="stat-delta delta-up">Target ≤2d ✓</div><div class="stat-track"><div class="stat-fill" style="width:70%;background:var(--green)"></div></div></div>
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title">Pipeline Funnel — All Openings</div></div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">Applied</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--muted)"><span>20</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">AI Screened</div><div class="bar-track"><div class="bar-fill" style="width:90%;background:var(--purple)"><span>18</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Shortlisted</div><div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--accent)"><span>11</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Interviewed</div><div class="bar-track"><div class="bar-fill" style="width:40%;background:var(--teal)"><span>8</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Offers Made</div><div class="bar-track"><div class="bar-fill" style="width:15%;background:var(--green)"><span>3</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Accepted</div><div class="bar-track"><div class="bar-fill" style="width:5%;background:var(--green)"><span>1</span></div></div></div>
+        </div>
+        <div style="padding:6px 16px 12px;display:flex;gap:16px;flex-wrap:wrap;border-top:1px solid var(--border);margin-top:6px">
+          <span style="font-size:11px;color:var(--muted)">Shortlist rate: <strong style="color:var(--text)">55%</strong></span>
+          <span style="font-size:11px;color:var(--muted)">Interview rate: <strong style="color:var(--text)">44%</strong></span>
+          <span style="font-size:11px;color:var(--muted)">Offer rate: <strong style="color:var(--text)">15%</strong></span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><div class="panel-title">Guardrail Health</div></div>
+        <div style="padding:14px 16px">
+          <div class="guardrail-item" style="background:var(--green-bg)"><div><div class="guardrail-title" style="color:var(--green)">Duplicate candidate rate</div><div class="guardrail-sub">Target &lt;5% · No duplicates detected</div></div><span class="badge badge-green">0% ✓</span></div>
+          <div class="guardrail-item" style="background:var(--green-bg)"><div><div class="guardrail-title" style="color:var(--green)">Offers without approval</div><div class="guardrail-sub">Zero tolerance · 0 violations</div></div><span class="badge badge-green">0 ✓</span></div>
+          <div class="guardrail-item" style="background:var(--green-bg)"><div><div class="guardrail-title" style="color:var(--green)">AI scoring error rate</div><div class="guardrail-sub">Target &lt;5% · Agentforce healthy</div></div><span class="badge badge-green">0% ✓</span></div>
+          <div class="guardrail-item" style="background:var(--amber-bg)"><div><div class="guardrail-title" style="color:var(--amber)">Stale application rate</div><div class="guardrail-sub">Target &lt;10% · 3 apps over 5 days</div></div><span class="badge badge-amber">6.4% ⚠</span></div>
+          <div class="guardrail-item" style="background:var(--green-bg)"><div><div class="guardrail-title" style="color:var(--green)">Interview feedback completion</div><div class="guardrail-sub">Target ≥95% within 2 days</div></div><span class="badge badge-green">94% ~</span></div>
+          <div class="guardrail-item" style="background:var(--green-bg)"><div><div class="guardrail-title" style="color:var(--green)">System adoption (DAU/licensed)</div><div class="guardrail-sub">Target ≥80% by Day 60</div></div><span class="badge badge-green">87% ✓</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══════════════ DETAIL SLIDE PANEL ═══════════════ -->
+<div class="overlay" id="detail-overlay" onclick="maybeCloseDetail(event)">
+  <div class="slide-panel" id="slide-panel">
+    <button class="sp-close" onclick="closeDetail()">✕ Close</button>
+    <div id="detail-body"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ADD CANDIDATE MODAL ═══════════════ -->
+<div class="modal-overlay" id="modal-add-candidate">
+  <div class="modal">
+    <div class="modal-title">Add New Candidate</div>
+    <div class="modal-sub">Manually enter candidate details. Fields marked * are required.</div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">First Name *</label><input class="form-input" id="c-fname" placeholder="e.g. Jane"></div>
+      <div class="form-row"><label class="form-label">Last Name *</label><input class="form-input" id="c-lname" placeholder="e.g. Smith"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Email *</label><input class="form-input" id="c-email" type="email" placeholder="jane.smith@email.com"></div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">Phone</label><input class="form-input" id="c-phone" placeholder="+1-415-555-0100"></div>
+      <div class="form-row"><label class="form-label">Current Company</label><input class="form-input" id="c-company" placeholder="e.g. Salesforce"></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">Years of Experience</label><input class="form-input" id="c-exp" type="number" step="0.5" placeholder="e.g. 5.5"></div>
+      <div class="form-row"><label class="form-label">Source</label><select class="form-select" id="c-source"><option>LinkedIn</option><option>Referral</option><option>Job Board</option><option>Direct</option><option>Other</option></select></div>
+    </div>
+    <div class="form-row"><label class="form-label">Location</label><input class="form-input" id="c-loc" placeholder="e.g. San Francisco, CA"></div>
+    <div class="form-row"><label class="form-label">Resume Text (for AI scoring)</label><textarea class="form-textarea" id="c-resume" placeholder="Paste plain text resume content…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-add-candidate')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitCandidate()">Add Candidate</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ADD JOB MODAL ═══════════════ -->
+<div class="modal-overlay" id="modal-add-job">
+  <div class="modal">
+    <div class="modal-title">New Job Opening</div>
+    <div class="modal-sub">Create a new requisition. Recruiters will be notified when activated.</div>
+    <div class="form-row"><label class="form-label">Job Title *</label><input class="form-input" id="j-title" placeholder="e.g. Senior Software Engineer"></div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">Department *</label><select class="form-select" id="j-dept"><option>Engineering</option><option>Sales</option><option>Marketing</option><option>HR</option><option>Finance</option><option>Operations</option></select></div>
+      <div class="form-row"><label class="form-label">Employment Type</label><select class="form-select" id="j-type"><option>Full-Time</option><option>Part-Time</option><option>Contract</option><option>Temporary</option></select></div>
+    </div>
+    <div class="form-row"><label class="form-label">Location</label><input class="form-input" id="j-loc" placeholder="e.g. New York, NY or Remote — US"></div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">Salary Min ($)</label><input class="form-input" id="j-min" type="number" placeholder="120000"></div>
+      <div class="form-row"><label class="form-label">Salary Max ($)</label><input class="form-input" id="j-max" type="number" placeholder="160000"></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">Experience Level</label><select class="form-select" id="j-level"><option>Entry</option><option>Mid</option><option>Senior</option><option>Lead</option><option>Manager</option><option>Director</option><option>VP</option></select></div>
+      <div class="form-row"><label class="form-label">Target Close Date</label><input class="form-input" id="j-close" type="date"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-add-job')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitJob()">Create Job Opening</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-area" id="toast-area"></div>
+
+<script>
+// ═══════════════ DATA ═══════════════
+const APPS = [
+  {id:'priya-sfdc',cand:'Priya Sharma',email:'priya.sharma@email.com',job:'Senior Salesforce Developer',score:92,priority:'High',status:'Shortlisted',recruiter:'Sam R.'},
+  {id:'chen-mgr',cand:'Chen Wei',email:'chen.wei@email.com',job:'Engineering Manager',score:95,priority:'High',status:'Recommended for Offer',recruiter:'Sam R.'},
+  {id:'marcus-mgr',cand:'Marcus Johnson',email:'marcus.johnson@email.com',job:'Engineering Manager',score:88,priority:'High',status:'Passed Technical',recruiter:'Sam R.'},
+  {id:'mei-mgr',cand:'Mei Tanaka',email:'mei.tanaka@email.com',job:'Engineering Manager',score:90,priority:'High',status:'Shortlisted',recruiter:'Sam R.'},
+  {id:'emily-fse',cand:'Emily Chen',email:'emily.chen@email.com',job:'Full-Stack Software Engineer',score:86,priority:'High',status:'Passed Technical',recruiter:'Sam R.'},
+  {id:'aisha-da',cand:'Aisha Patel',email:'aisha.patel@email.com',job:'Data Analyst',score:85,priority:'High',status:'Shortlisted',recruiter:'Alex T.'},
+  {id:'david-fse',cand:'David Thompson',email:'david.thompson@email.com',job:'Full-Stack Software Engineer',score:83,priority:'High',status:'Passed Screen',recruiter:'Sam R.'},
+  {id:'fatima-da',cand:'Fatima Al-Hassan',email:'fatima.alhassan@email.com',job:'Data Analyst',score:79,priority:'High',status:'Interview Scheduled',recruiter:'Alex T.'},
+  {id:'sofia-pm',cand:'Sofia Rodriguez',email:'sofia.rodriguez@email.com',job:'Project Manager',score:78,priority:'High',status:'Shortlisted',recruiter:'Alex T.'},
+  {id:'james-fse',cand:"James O'Brien",email:'james.obrien@email.com',job:'Full-Stack Software Engineer',score:81,priority:'High',status:'Interview Scheduled',recruiter:'Sam R.'},
+  {id:'chen-fse',cand:'Chen Wei',email:'chen.wei@email.com',job:'Full-Stack Software Engineer',score:77,priority:'High',status:'Shortlisted',recruiter:'Sam R.'},
+  {id:'olivia-sfdc',cand:'Olivia Martinez',email:'olivia.martinez@email.com',job:'Senior Salesforce Developer',score:76,priority:'High',status:'Shortlisted',recruiter:'Alex T.'},
+  {id:'tom-pm',cand:'Tom Wilson',email:'tom.wilson@email.com',job:'Project Manager',score:65,priority:'Medium',status:'Review Required',recruiter:'Alex T.'},
+  {id:'priya-fse',cand:'Priya Sharma',email:'priya.sharma@email.com',job:'Full-Stack Software Engineer',score:52,priority:'Medium',status:'Review Required',recruiter:'Sam R.'},
+  {id:'rachel-sfdc',cand:'Rachel Kim',email:'rachel.kim@email.com',job:'Senior Salesforce Developer',score:58,priority:'Medium',status:'Review Required',recruiter:'Alex T.'},
+  {id:'jordan-da',cand:'Jordan Davis',email:'jordan.davis@email.com',job:'Data Analyst',score:38,priority:'Low',status:'Not Qualified',recruiter:'Alex T.'},
+  {id:'rachel-da',cand:'Rachel Kim',email:'rachel.kim@email.com',job:'Data Analyst',score:42,priority:'Low',status:'Not Qualified',recruiter:'Alex T.'},
+  {id:'david-sfdc',cand:'David Thompson',email:'david.thompson@email.com',job:'Senior Salesforce Developer',score:35,priority:'Low',status:'Not Qualified',recruiter:'Alex T.'},
+  {id:'alex-fse',cand:'Alex Petrov',email:'alex.petrov@email.com',job:'Full-Stack Software Engineer',score:null,priority:'Pending',status:'New',recruiter:'Sam R.'},
+  {id:'marcus-pm',cand:'Marcus Johnson',email:'marcus.johnson@email.com',job:'Project Manager',score:null,priority:'—',status:'Withdrawn',recruiter:'Alex T.'},
+];
+
+const CANDIDATES = [
+  {id:'priya',name:'Priya Sharma',email:'priya.sharma@email.com',company:'Salesforce',exp:8.0,skills:['Apex','LWC','Salesforce','JavaScript','SOQL','REST APIs','Agile'],location:'San Francisco, CA',source:'LinkedIn'},
+  {id:'marcus',name:'Marcus Johnson',email:'marcus.johnson@email.com',company:'JPMorgan Chase',exp:12.0,skills:['Java','Python','SQL','AWS','Docker','Kubernetes','CI/CD','Leadership'],location:'New York, NY',source:'Referral'},
+  {id:'aisha',name:'Aisha Patel',email:'aisha.patel@email.com',company:'Dell Technologies',exp:3.5,skills:['Python','Data Analysis','Machine Learning','SQL','Tableau','Excel'],location:'Austin, TX',source:'Job Board'},
+  {id:'james',name:"James O'Brien",email:'james.obrien@email.com',company:'Amazon',exp:6.0,skills:['Java','AWS','React','Node.js','GraphQL','Docker','CI/CD'],location:'Seattle, WA',source:'Direct'},
+  {id:'sofia',name:'Sofia Rodriguez',email:'sofia.rodriguez@email.com',company:'Deloitte',exp:4.0,skills:['Project Management','Agile','Scrum','Excel','Power BI','Communication'],location:'Miami, FL',source:'LinkedIn'},
+  {id:'chen',name:'Chen Wei',email:'chen.wei@email.com',company:'Google',exp:10.0,skills:['Python','Machine Learning','SQL','GCP','Kubernetes','Docker','REST APIs'],location:'Mountain View, CA',source:'Referral'},
+  {id:'rachel',name:'Rachel Kim',email:'rachel.kim@email.com',company:'Accenture',exp:2.0,skills:['Salesforce','Apex','LWC','JavaScript','SOQL','HTML','CSS'],location:'Chicago, IL',source:'Job Board'},
+  {id:'david',name:'David Thompson',email:'david.thompson@email.com',company:'HubSpot',exp:7.5,skills:['JavaScript','TypeScript','React','Angular','Node.js','REST APIs','Git'],location:'Boston, MA',source:'LinkedIn'},
+  {id:'fatima',name:'Fatima Al-Hassan',email:'fatima.alhassan@email.com',company:'ExxonMobil',exp:5.0,skills:['Data Analysis','Python','SQL','Excel','Power BI','Tableau'],location:'Houston, TX',source:'Direct'},
+  {id:'tom',name:'Tom Wilson',email:'tom.wilson@email.com',company:'Lockheed Martin',exp:15.0,skills:['Project Management','Agile','Leadership','Communication','Cybersecurity'],location:'Denver, CO',source:'Referral'},
+  {id:'emily',name:'Emily Chen',email:'emily.chen@email.com',company:'Stripe',exp:4.5,skills:['Python','JavaScript','React','SQL','REST APIs','Docker','Agile'],location:'San Francisco, CA',source:'LinkedIn'},
+  {id:'jordan',name:'Jordan Davis',email:'jordan.davis@email.com',company:'Coca-Cola',exp:1.5,skills:['Excel','Communication','Data Analysis','SQL','Power BI'],location:'Atlanta, GA',source:'Job Board'},
+  {id:'mei',name:'Mei Tanaka',email:'mei.tanaka@email.com',company:'Netflix',exp:9.0,skills:['Java','Python','AWS','Kubernetes','Docker','CI/CD','Microservices'],location:'Los Angeles, CA',source:'Referral'},
+  {id:'alex',name:'Alex Petrov',email:'alex.petrov@email.com',company:'Bloomberg',exp:6.5,skills:['C#','.NET','SQL','Azure','DevOps','Docker','REST APIs'],location:'New York, NY',source:'Direct'},
+  {id:'olivia',name:'Olivia Martinez',email:'olivia.martinez@email.com',company:'State Farm',exp:3.0,skills:['Salesforce','Apex','LWC','JavaScript','SOQL','Figma','UI/UX Design'],location:'Phoenix, AZ',source:'LinkedIn'},
+];
+
+const JOBS = [
+  {title:'Senior Salesforce Developer',dept:'Engineering',loc:'San Francisco, CA',type:'Full-Time',salMin:130000,salMax:170000,skills:['Apex','LWC','Salesforce','SOQL','Agile'],level:'Senior',status:'Open',close:'Mar 15',applied:6,shortlisted:3,offers:1,pct:55},
+  {title:'Engineering Manager',dept:'Engineering',loc:'New York, NY',type:'Full-Time',salMin:160000,salMax:210000,skills:['Java','AWS','Leadership','Python','CI/CD'],level:'Manager',status:'Open',close:'Feb 28',applied:5,shortlisted:4,offers:2,pct:80},
+  {title:'Data Analyst',dept:'Finance',loc:'Austin, TX',type:'Full-Time',salMin:70000,salMax:100000,skills:['Python','SQL','Tableau','Power BI','Communication'],level:'Mid',status:'Open',close:'Apr 1',applied:5,shortlisted:2,offers:0,pct:35},
+  {title:'Full-Stack Software Engineer',dept:'Engineering',loc:'Seattle, WA',type:'Full-Time',salMin:120000,salMax:160000,skills:['React','TypeScript','Node.js','Docker','Git'],level:'Mid',status:'Open',close:'Mar 30',applied:7,shortlisted:4,offers:0,pct:60},
+  {title:'Project Manager',dept:'Operations',loc:'Denver, CO',type:'Contract',salMin:90000,salMax:120000,skills:['Project Management','Agile','Scrum','Communication'],level:'Senior',status:'Open',close:'Apr 15',applied:3,shortlisted:2,offers:0,pct:40},
+];
+
+const CAND_DETAILS = {
+  'priya-sfdc':{candId:'priya',color:'#EEF3FF',tc:'#1B4FD8',score:92,priority:'High',scorePct:[95,90,88],flags:[],summary:'Strong match. Candidate possesses all required skills including Apex, LWC, and SOQL. 8 years aligns with Senior level. Enterprise-scale Salesforce development demonstrated.',reqSkills:['Apex','LWC','Salesforce','JavaScript','SOQL','REST APIs','Agile'],interviews:[{round:'Screen',date:'Pending',comm:0,tech:0,culture:0,rec:'—'}]},
+  'chen-mgr':{candId:'chen',color:'#E8F5EF',tc:'#0A6245',score:95,priority:'High',scorePct:[92,98,95],flags:['Overqualification Risk'],summary:'Exceptional candidate. PhD with 10 years at Google. Strong ML/Python depth. Leadership experience. Exceeds technical requirements.',reqSkills:['Java','Python','AWS','Leadership','Agile','Scrum','CI/CD'],interviews:[{round:'Screen',date:'Jan 18',comm:5,tech:5,culture:4,rec:'Advance'},{round:'Technical',date:'Jan 22',comm:5,tech:5,culture:5,rec:'Advance'}]},
+  'marcus-mgr':{candId:'marcus',color:'#EFEDFF',tc:'#4B3FAF',score:88,priority:'High',scorePct:[88,90,85],flags:['Overqualification Risk'],summary:'Excellent leadership and technical background. 12 years with team management. Strong AWS and Java skills. Fits Manager-level well.',reqSkills:['Java','Python','AWS','Leadership','Agile','Scrum','CI/CD'],interviews:[{round:'Screen',date:'Jan 18',comm:5,tech:5,culture:4,rec:'Advance'},{round:'Technical',date:'Jan 22',comm:5,tech:5,culture:5,rec:'Advance'}]},
+  'james-fse':{candId:'james',color:'#EEF3FF',tc:'#1B4FD8',score:81,priority:'High',scorePct:[80,88,78],flags:[],summary:'Strong full-stack profile. 6 years at Amazon with React and Node.js. Java background is a plus. AWS expertise adds value.',reqSkills:['JavaScript','TypeScript','React','Node.js','SQL','REST APIs','Docker','Git'],interviews:[{round:'Screen',date:'Jan 20',comm:4,tech:4,culture:5,rec:'Advance'},{round:'Technical',date:'Mar 16 (scheduled)',comm:0,tech:0,culture:0,rec:'Pending'}]},
+  'rachel-sfdc':{candId:'rachel',color:'#FEF3DC',tc:'#7A4A00',score:58,priority:'Medium',scorePct:[78,35,60],flags:['Experience Level Mismatch'],summary:'Relevant Salesforce skills but only 2 years of experience. Role requires Senior level (5+ years). Skills match good but experience gap is significant.',reqSkills:['Salesforce','Apex','LWC','JavaScript','SOQL','REST APIs','Agile'],interviews:[]},
+  'jordan-da':{candId:'jordan',color:'#FEF0F0',tc:'#961414',score:38,priority:'Low',scorePct:[35,28,55],flags:['Experience Level Mismatch','Skills Gap: Python','Skills Gap: Tableau'],summary:'Only 1.5 years experience with limited technical skills. Missing Python and Tableau. SQL skills are basic. Does not meet Mid-level requirements.',reqSkills:['Data Analysis','Python','SQL','Excel','Tableau','Power BI'],interviews:[]},
+  'aisha-da':{candId:'aisha',color:'#E8F5EF',tc:'#0A6245',score:85,priority:'High',scorePct:[85,82,88],flags:[],summary:'Good fit. 3.5 years of relevant analytics experience. Proficient in Python, SQL, and Tableau. Experience aligns with Mid-level requirements.',reqSkills:['Data Analysis','Python','SQL','Excel','Tableau','Power BI'],interviews:[{round:'Screen',date:'Jan 25',comm:4,tech:3,culture:4,rec:'Advance'},{round:'Technical',date:'Mar 17 (scheduled)',comm:0,tech:0,culture:0,rec:'Pending'}]},
+  'tom-pm':{candId:'tom',color:'#FEF3DC',tc:'#7A4A00',score:65,priority:'Medium',scorePct:[72,60,60],flags:['Overqualification Risk','Location Mismatch'],summary:'Strong PM experience but 15 years may indicate overqualification for a contract role. Defense background less relevant. Core PM skills solid.',reqSkills:['Project Management','Agile','Scrum','Communication','Leadership'],interviews:[]},
+  'alex-fse':{candId:'alex',color:'#EFEDFF',tc:'#4B3FAF',score:null,priority:'Pending',scorePct:[null,null,null],flags:[],summary:'AI scoring not yet triggered. Application created 5 days ago.',reqSkills:['JavaScript','TypeScript','React','Node.js','SQL','REST APIs'],interviews:[]},
+  'david-fse':{candId:'david',color:'#EEF3FF',tc:'#1B4FD8',score:83,priority:'High',scorePct:[85,88,75],flags:[],summary:'Strong frontend skills with React and TypeScript. 7.5 years experience. Tech lead experience is a plus.',reqSkills:['JavaScript','TypeScript','React','Node.js','SQL','REST APIs','Docker','Git'],interviews:[{round:'Screen',date:'Jan 19',comm:5,tech:4,culture:4,rec:'Advance'},{round:'Technical',date:'Jan 23',comm:4,tech:5,culture:4,rec:'Advance'}]},
+  'emily-fse':{candId:'emily',color:'#E8F5EF',tc:'#0A6245',score:86,priority:'High',scorePct:[88,80,88],flags:[],summary:'4.5 years at Stripe with strong Python and React. API design experience highly relevant. Docker matches requirements.',reqSkills:['JavaScript','TypeScript','React','Node.js','SQL','REST APIs','Docker','Git'],interviews:[{round:'Screen',date:'Jan 21',comm:4,tech:5,culture:4,rec:'Advance'},{round:'Technical',date:'Jan 24',comm:4,tech:5,culture:5,rec:'Advance'}]},
+  'fatima-da':{candId:'fatima',color:'#FEF3DC',tc:'#7A4A00',score:79,priority:'High',scorePct:[80,82,74],flags:[],summary:'5 years business analysis. Strong Power BI and SQL. Python proficiency matches. MBA adds value for finance context.',reqSkills:['Data Analysis','Python','SQL','Excel','Tableau','Power BI'],interviews:[{round:'Screen',date:'Jan 25',comm:4,tech:3,culture:4,rec:'Advance'},{round:'Technical',date:'Mar 17 (scheduled)',comm:0,tech:0,culture:0,rec:'Pending'}]},
+  'mei-mgr':{candId:'mei',color:'#E8F5EF',tc:'#0A6245',score:90,priority:'High',scorePct:[90,92,86],flags:[],summary:'9 years at Netflix. Strong distributed systems. Java/Python proficiency. Infrastructure management translates to engineering leadership.',reqSkills:['Java','Python','AWS','Leadership','Agile','Scrum','CI/CD'],interviews:[]},
+  'sofia-pm':{candId:'sofia',color:'#EFEDFF',tc:'#4B3FAF',score:78,priority:'High',scorePct:[75,80,80],flags:[],summary:'Good PM background. PMP certified. 4 years at Deloitte consulting aligns with requirements. Strong soft skills.',reqSkills:['Project Management','Agile','Scrum','Communication','Leadership'],interviews:[]},
+  'olivia-sfdc':{candId:'olivia',color:'#EEF3FF',tc:'#1B4FD8',score:76,priority:'High',scorePct:[82,60,78],flags:['Experience Level Mismatch'],summary:'3 years Salesforce with Apex and LWC. UI/UX design skills are a differentiator. Experience slightly below Senior level but skills strong.',reqSkills:['Salesforce','Apex','LWC','JavaScript','SOQL','REST APIs','Agile'],interviews:[]},
+};
+
+const OFFERS = [
+  {id:'ofr1',candName:'Chen Wei',candInitials:'CW',role:'Engineering Manager',offerNum:'OFR-00001',proposed:200000,bandMax:210000,withinBand:true,startDate:'Mar 1, 2026',type:'Full-Time',note:'Includes $30K signing bonus and 50K RSUs vesting over 4 years. Relocation package $10K.',approvalStatus:'Pending',disabled:false},
+  {id:'ofr2',candName:'Chen Wei (Full-Stack)',candInitials:'CW',role:'Full-Stack Engineer',offerNum:'OFR-00004',proposed:155000,bandMax:160000,withinBand:true,startDate:'Apr 1, 2026',type:'Full-Time',note:'Standard offer within band.',approvalStatus:'Pending',disabled:false},
+];
+
+let appFilter = 'all';
+let approvalStates = {ofr1:'Pending',ofr2:'Pending'};
+
+// ═══════════════ NAVIGATION ═══════════════
+function nav(page, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const el = document.getElementById('p-'+page);
+  if(el) el.classList.add('active');
+  if(btn) btn.classList.add('active');
+  const titles = {dashboard:'Recruiter Dashboard',applications:'All Applications',candidates:'Candidate Directory',jobs:'Job Openings',approvals:'Offer Approvals',interviews:'Interview Schedule',analytics:'Pipeline Analytics'};
+  document.getElementById('page-title').textContent = titles[page]||page;
+  if(page==='applications') renderAppsTable();
+  if(page==='candidates') renderCandTable();
+  if(page==='jobs') renderJobsGrid();
+  if(page==='approvals') renderApprovals();
+}
+
+// ═══════════════ SCORE HELPERS ═══════════════
+function scoreColor(s) {
+  if(s==null) return 'var(--muted)';
+  if(s>=75) return 'var(--green)';
+  if(s>=50) return 'var(--amber)';
+  return 'var(--red)';
+}
+function priorityBadge(p) {
+  if(p==='High') return 'badge-green';
+  if(p==='Medium') return 'badge-amber';
+  if(p==='Low') return 'badge-red';
+  return 'badge-gray';
+}
+function statusBadge(s) {
+  const m = {'Shortlisted':'badge-green','Recommended for Offer':'badge-purple','Passed Technical':'badge-blue','Passed Screen':'badge-blue','Interview Scheduled':'badge-blue','Review Required':'badge-amber','Not Qualified':'badge-red','New':'badge-gray','Withdrawn':'badge-gray'};
+  return m[s]||'badge-gray';
+}
+function scoreBar(sc, showNum=true) {
+  const c = scoreColor(sc);
+  const w = sc!=null ? sc+'%' : '4%';
+  return `<div class="score-wrap"><div class="score-track"><div class="score-fill" style="width:${w};background:${c}"></div></div>${showNum?`<span class="score-num" style="color:${c}">${sc!=null?sc:'—'}</span>`:''}</div>`;
+}
+
+// ═══════════════ DASH APPS TABLE ═══════════════
+function renderDashApps() {
+  const rows = APPS.filter(a=>a.status!=='Withdrawn'&&a.status!=='Not Qualified').slice(0,7);
+  document.getElementById('dash-apps').innerHTML = rows.map(a=>`
+    <tr onclick="openDetail('${a.id}')">
+      <td><div class="td-primary">${a.cand}</div><div class="td-secondary">${a.email}</div></td>
+      <td class="td-trunc" style="max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.job}</td>
+      <td>${scoreBar(a.score)}</td>
+      <td><span class="badge ${statusBadge(a.status)}">${a.status.length>15?a.status.slice(0,13)+'…':a.status}</span></td>
+      <td style="color:var(--muted);font-size:11.5px">${a.recruiter}</td>
+    </tr>`).join('');
+}
+
+// ═══════════════ APPLICATIONS TABLE ═══════════════
+function renderAppsTable() {
+  const search = (document.getElementById('app-search')?.value||'').toLowerCase();
+  const jobF = document.getElementById('app-job')?.value||'';
+  const scF = document.getElementById('app-score')?.value||'';
+  let data = APPS;
+  if(appFilter!=='all') {
+    if(appFilter==='interview') data=data.filter(a=>['Interview Scheduled','Passed Screen','Passed Technical','Passed Final'].includes(a.status));
+    else if(appFilter==='offer') data=data.filter(a=>['Recommended for Offer','Offer Approved','Offer Accepted'].includes(a.status));
+    else if(appFilter==='closed') data=data.filter(a=>['Not Qualified','Withdrawn','Rejected'].includes(a.status));
+    else data=data.filter(a=>a.status===appFilter);
+  }
+  if(search) data=data.filter(a=>a.cand.toLowerCase().includes(search)||a.email.toLowerCase().includes(search)||a.job.toLowerCase().includes(search));
+  if(jobF) data=data.filter(a=>a.job===jobF);
+  if(scF==='high') data=data.filter(a=>a.score!=null&&a.score>=75);
+  else if(scF==='medium') data=data.filter(a=>a.score!=null&&a.score>=50&&a.score<75);
+  else if(scF==='low') data=data.filter(a=>a.score!=null&&a.score<50);
+
+  document.getElementById('apps-tbody').innerHTML = data.length ? data.map(a=>`
+    <tr onclick="openDetail('${a.id}')">
+      <td><div class="td-primary">${a.cand}</div><div class="td-secondary">${a.email}</div></td>
+      <td class="td-trunc" style="max-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.job}</td>
+      <td>${scoreBar(a.score)}</td>
+      <td><span class="badge ${priorityBadge(a.priority)}">${a.priority}</span></td>
+      <td><span class="badge ${statusBadge(a.status)}">${a.status.length>18?a.status.slice(0,16)+'…':a.status}</span></td>
+      <td style="color:var(--muted);font-size:11.5px">${a.recruiter}</td>
+    </tr>`).join('') :
+    '<tr><td colspan="6"><div class="empty-state">No applications match your filters.</div></td></tr>';
+}
+
+function filterApps(filter, tabEl) {
+  appFilter = filter;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(tabEl) tabEl.classList.add('active');
+  renderAppsTable();
+}
+
+// ═══════════════ CANDIDATES TABLE ═══════════════
+function renderCandTable() {
+  const search = (document.getElementById('cand-search')?.value||'').toLowerCase();
+  const srcF = document.getElementById('cand-source')?.value||'';
+  const expF = document.getElementById('cand-exp')?.value||'';
+  let data = CANDIDATES;
+  if(search) data=data.filter(c=>c.name.toLowerCase().includes(search)||c.email.toLowerCase().includes(search)||c.skills.some(s=>s.toLowerCase().includes(search)));
+  if(srcF) data=data.filter(c=>c.source===srcF);
+  if(expF==='0-3') data=data.filter(c=>c.exp<3);
+  else if(expF==='3-7') data=data.filter(c=>c.exp>=3&&c.exp<=7);
+  else if(expF==='7+') data=data.filter(c=>c.exp>7);
+
+  const sourceClasses = {'LinkedIn':'badge-blue','Referral':'badge-green','Job Board':'badge-amber','Direct':'badge-gray'};
+  document.getElementById('cand-tbody').innerHTML = data.length ? data.map(c=>`
+    <tr onclick="openCandDetail('${c.id}')">
+      <td><div class="td-primary">${c.name}</div><div class="td-secondary">${c.email}</div></td>
+      <td style="font-size:12px">${c.company}</td>
+      <td><span style="font-family:var(--mono);font-size:12px;font-weight:700">${c.exp.toFixed(1)} yrs</span></td>
+      <td><div class="skill-tags">${c.skills.slice(0,3).map(s=>`<span class="skill-tag">${s}</span>`).join('')}${c.skills.length>3?`<span class="skill-tag">+${c.skills.length-3}</span>`:''}</div></td>
+      <td style="font-size:12px;color:var(--muted)">${c.location}</td>
+      <td><span class="badge ${sourceClasses[c.source]||'badge-gray'}">${c.source}</span></td>
+    </tr>`).join('') :
+    '<tr><td colspan="6"><div class="empty-state">No candidates match your search.</div></td></tr>';
+}
+
+// ═══════════════ JOBS GRID ═══════════════
+function renderJobsGrid() {
+  const urgentColors = {100:'var(--red)',80:'var(--amber)',55:'var(--accent)',60:'var(--accent)',40:'var(--green)'};
+  document.getElementById('jobs-grid').innerHTML = JOBS.map(j=>{
+    const pc = j.pct;
+    const barColor = pc>=75?'var(--amber)':'var(--accent)';
+    const urgentDate = j.close==='Feb 28' ? `<span class="badge badge-red">Closes ${j.close}</span>` : `<span style="font-size:10px;color:var(--muted)">Closes ${j.close}</span>`;
+    return `<div class="job-card">
+      <div class="job-dept">${j.dept}${j.type==='Contract'?` · Contract`:''}</div>
+      <div class="job-title">${j.title}</div>
+      <div class="job-loc"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="3.5" r="1.8"/><path d="M5 0C3.3 0 2 1.3 2 3c0 2.5 3 7 3 7s3-4.5 3-7C8 1.3 6.7 0 5 0z" fill-rule="evenodd"/></svg>${j.loc}</div>
+      <div class="job-salary">$${(j.salMin/1000).toFixed(0)}K – $${(j.salMax/1000).toFixed(0)}K</div>
+      <div class="skill-tags" style="margin-bottom:10px">${j.skills.slice(0,4).map(s=>`<span class="skill-tag" style="font-size:9.5px">${s}</span>`).join('')}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span class="badge badge-green">Open</span>${urgentDate}</div>
+      <div class="job-progress"><div class="job-progress-fill" style="width:${pc}%;background:${barColor}"></div></div>
+      <hr class="job-divider">
+      <div class="job-stats">
+        <div class="job-stat"><div class="job-stat-num">${j.applied}</div><div class="job-stat-label">Applied</div></div>
+        <div class="job-stat"><div class="job-stat-num">${j.shortlisted}</div><div class="job-stat-label">Shortlisted</div></div>
+        <div class="job-stat"><div class="job-stat-num">${j.offers}</div><div class="job-stat-label">Offers</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════ APPROVALS ═══════════════
+function renderApprovals() {
+  const container = document.getElementById('pending-approvals');
+  let html = '';
+  for(const ofr of OFFERS) {
+    const st = approvalStates[ofr.id];
+    const overBand = !ofr.withinBand;
+    const bandDiff = ofr.proposed - ofr.bandMax;
+    let actionHtml = '';
+    if(st==='Pending') {
+      actionHtml = overBand
+        ? `<span class="badge badge-amber" style="margin-top:8px;display:inline-block">⚠ Awaiting HR/Compensation Approval</span>`
+        : `<div class="approval-actions"><button class="btn btn-approve btn-sm" onclick="doApprove('${ofr.id}')">Approve</button><button class="btn btn-reject btn-sm" onclick="doReject('${ofr.id}')">Reject</button></div>`;
+    } else if(st==='Approved') {
+      actionHtml = `<div style="margin-top:8px"><span class="badge badge-green">✓ Approved</span></div>`;
+    } else {
+      actionHtml = `<div style="margin-top:8px"><span class="badge badge-red">✕ Rejected</span></div>`;
+    }
+    html += `<div class="approval-item" style="opacity:${st!=='Pending'?'.6':'1'}">
+      <div class="ai-ava" style="background:${ofr.withinBand?'var(--green-bg)':'var(--red-bg)'};color:${ofr.withinBand?'var(--green)':'var(--red)'}">${ofr.candInitials}</div>
+      <div class="approval-body">
+        <div class="approval-name">${ofr.candName} — ${ofr.role}</div>
+        <div class="approval-detail">Offer ${ofr.offerNum} · ${ofr.type} · Start: ${ofr.startDate}</div>
+        <div class="approval-note">
+          ${ofr.withinBand?`<span class="badge badge-green">Within Band ✓</span>`:`<span class="badge badge-red">Over Band ✗ (+$${(bandDiff/1000).toFixed(0)}K)</span>`}
+          <span style="font-size:11px;color:var(--muted)">Band max: $${(ofr.bandMax/1000).toFixed(0)}K</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px">${ofr.note}</div>
+        ${actionHtml}
+      </div>
+      <div>
+        <div class="approval-salary" style="color:${ofr.withinBand?'var(--text)':'var(--red)'}">$${ofr.proposed.toLocaleString()}</div>
+        <div style="font-size:10px;color:var(--muted);text-align:right;margin-top:3px">Proposed</div>
+      </div>
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+
+function doApprove(id) {
+  approvalStates[id] = 'Approved';
+  renderApprovals();
+  toast('Offer approved. Recruiter notified.','success');
+}
+function doReject(id) {
+  const reason = prompt('Please enter rejection reason (required for audit trail):');
+  if(!reason) return;
+  approvalStates[id] = 'Rejected';
+  renderApprovals();
+  toast('Offer rejected. Recruiter notified with reason.','info');
+}
+
+// ═══════════════ DETAIL PANEL ═══════════════
+function openDetail(appId) {
+  const d = CAND_DETAILS[appId];
+  if(!d) { openSimpleDetail(appId); return; }
+  const cand = CANDIDATES.find(c=>c.id===d.candId);
+  if(!cand) return;
+
+  const sc = scoreColor(d.score);
+  const circleBg = d.score!=null ? (d.score>=75?'var(--green-bg)':d.score>=50?'var(--amber-bg)':'var(--red-bg)') : 'var(--bg)';
+
+  const skillsHtml = cand.skills.map(s=>`<span class="skill-tag ${d.reqSkills.includes(s)?'match':''}">${s}</span>`).join('');
+  const flagsHtml = (d.flags||[]).map(f=>`<span class="risk-tag">⚠ ${f}</span>`).join('');
+
+  let scoreSection = '';
+  if(d.score!=null) {
+    const labels = ['Skills Match (50%)','Experience (30%)','Role Fit (20%)'];
+    const subRows = d.scorePct.map((v,i)=>v!=null?`
+      <div class="ai-sub-row">
+        <div class="ai-sub-lbl">${labels[i]}</div>
+        ${scoreBar(v,true)}
+      </div>`:''
+    ).join('');
+    scoreSection = `
+    <div class="sp-section">
+      <div class="sp-section-title">AI Evaluation — Candidate_Evaluation_V1</div>
+      <div class="ai-score-row">
+        <div class="ai-circle" style="background:${circleBg}">
+          <div class="ai-circle-num" style="color:${sc}">${d.score}</div>
+          <div class="ai-circle-lbl" style="color:${sc}">${d.priority}</div>
+        </div>
+        <div class="ai-sub-scores">${subRows}</div>
+      </div>
+      <div style="margin-top:12px;font-size:12px;line-height:1.6;color:var(--text)">${d.summary}</div>
+      ${flagsHtml?`<div style="margin-top:8px">${flagsHtml}</div>`:''}
+    </div>`;
+  } else {
+    scoreSection = `
+    <div class="sp-section">
+      <div class="sp-section-title">AI Evaluation</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="ai-circle" style="background:var(--bg)">
+          <div class="ai-circle-num" style="color:var(--muted)">—</div>
+          <div class="ai-circle-lbl" style="color:var(--muted)">Pending</div>
+        </div>
+        <div>
+          <div style="font-size:12px;margin-bottom:8px">AI scoring not yet triggered for this application.</div>
+          <button class="btn btn-primary btn-sm" onclick="triggerAI('${appId}')">▶ Run AI Screen Now</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  let ivSection = '';
+  if(d.interviews && d.interviews.length) {
+    ivSection = `<div class="sp-section"><div class="sp-section-title">Interview History</div><div class="iv-list">`;
+    for(const iv of d.interviews) {
+      const rb = iv.rec==='Advance'?'badge-green':iv.rec==='Reject'?'badge-red':iv.rec==='Hold'?'badge-amber':'badge-gray';
+      const ratingHtml = iv.comm>0 ? `
+        <div class="iv-ratings">
+          <div class="iv-rating-row">Comm <div class="rdots">${rdots(iv.comm)}</div></div>
+          <div class="iv-rating-row">Tech <div class="rdots">${rdots(iv.tech)}</div></div>
+          <div class="iv-rating-row">Culture <div class="rdots">${rdots(iv.culture)}</div></div>
+        </div>` : `<div style="font-size:11px;color:var(--muted);flex:1">Feedback pending</div>`;
+      ivSection += `<div class="iv-row"><div class="iv-round">${iv.round}</div><div class="iv-date" style="font-size:10.5px;color:var(--muted)">${iv.date}</div>${ratingHtml}<span class="badge ${rb}">${iv.rec}</span></div>`;
+    }
+    ivSection += `</div></div>`;
+  }
+
+  const app = APPS.find(a=>a.id===appId);
+  const statusBdg = app ? `<span class="badge ${statusBadge(app.status)}">${app.status}</span>` : '';
+
+  document.getElementById('detail-body').innerHTML = `
+    <div class="sp-hdr">
+      <div class="sp-ava" style="background:${d.color};color:${d.tc}">${cand.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div style="flex:1;padding-right:60px">
+        <div class="sp-name">${cand.name}</div>
+        <div class="sp-role">${app?app.job:''} · ${cand.company}</div>
+        <div class="sp-tags">${statusBdg}<span class="badge badge-gray">${cand.exp.toFixed(1)} yrs</span><span class="badge badge-gray">${cand.location}</span></div>
+      </div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title">Contact</div>
+      <div style="font-size:12px;color:var(--accent);margin-bottom:5px">${cand.email}</div>
+      <div style="display:flex;gap:16px;font-size:11.5px;color:var(--muted)">
+        <span>Source: <strong style="color:var(--text)">${cand.source}</strong></span>
+        <span>ID: <strong style="color:var(--text);font-family:var(--mono)">CAND-00${CANDIDATES.indexOf(cand)+1}</strong></span>
+      </div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title">Skills <span style="font-weight:400;font-size:9px;margin-left:6px;color:var(--muted)">highlighted = matches job requirements</span></div>
+      <div class="skill-tags">${skillsHtml}</div>
+    </div>
+    ${scoreSection}
+    ${ivSection}
+    <div class="sp-section">
+      <div class="sp-section-title">Actions</div>
+      <div class="sp-actions">
+        <button class="btn btn-primary btn-sm" onclick="toast('Interview scheduling form opening…','info')">Schedule Interview</button>
+        <button class="btn btn-sm" onclick="openOverride('${appId}')">Override AI Status</button>
+        <button class="btn btn-sm" style="border-color:var(--amber);color:var(--amber)" onclick="toast('Offer creation requires Recommended for Offer status.','info')">Create Offer</button>
+      </div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title">Override Log</div>
+      <div style="font-size:11.5px;color:var(--muted);font-style:italic">No overrides recorded for this application.</div>
+    </div>`;
+
+  showPanel();
+}
+
+function openCandDetail(candId) {
+  const cand = CANDIDATES.find(c=>c.id===candId);
+  if(!cand) return;
+  const candApps = APPS.filter(a=>a.cand===cand.name);
+
+  document.getElementById('detail-body').innerHTML = `
+    <div class="sp-hdr">
+      <div class="sp-ava" style="background:var(--accent-bg);color:var(--accent)">${cand.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div style="flex:1;padding-right:60px">
+        <div class="sp-name">${cand.name}</div>
+        <div class="sp-role">${cand.company}</div>
+        <div class="sp-tags"><span class="badge badge-gray">${cand.exp.toFixed(1)} yrs</span><span class="badge badge-gray">${cand.location}</span></div>
+      </div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title">Contact</div>
+      <div style="font-size:12px;color:var(--accent);margin-bottom:5px">${cand.email}</div>
+      <div style="font-size:11.5px;color:var(--muted)">Source: <strong style="color:var(--text)">${cand.source}</strong></div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title">All Skills</div>
+      <div class="skill-tags">${cand.skills.map(s=>`<span class="skill-tag">${s}</span>`).join('')}</div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title">Applications (${candApps.length})</div>
+      ${candApps.length ? `<table class="tbl" style="font-size:11.5px"><thead><tr><th>Job</th><th>Score</th><th>Status</th></tr></thead><tbody>${candApps.map(a=>`<tr onclick="openDetail('${a.id}')"><td>${a.job}</td><td>${a.score!=null?a.score:'—'}</td><td><span class="badge ${statusBadge(a.status)}" style="font-size:9.5px">${a.status}</span></td></tr>`).join('')}</tbody></table>` : '<div style="color:var(--muted);font-size:12px">No applications yet.</div>'}
+    </div>`;
+  showPanel();
+}
+
+function openSimpleDetail(id) {
+  const app = APPS.find(a=>a.id===id);
+  if(!app) return;
+  openCandDetail(CANDIDATES.findIndex(c=>c.name===app.cand)>=0 ? CANDIDATES.find(c=>c.name===app.cand).id : null);
+}
+
+function openOverride(appId) {
+  const reason = prompt('Override AI recommendation.\n\nEnter justification (required for compliance audit):');
+  if(!reason || reason.trim().length<10) { toast('Justification must be at least 10 characters.','error'); return; }
+  toast('Status override logged with justification. Override_Log__c record created.','success');
+}
+
+function triggerAI(appId) {
+  const btn = event.target;
+  btn.textContent = '⟳ Scoring…';
+  btn.disabled = true;
+  setTimeout(()=>{
+    const idx = APPS.findIndex(a=>a.id===appId);
+    if(idx>=0) { APPS[idx].score=72; APPS[idx].priority='Medium'; APPS[idx].status='Review Required'; }
+    if(CAND_DETAILS[appId]) { CAND_DETAILS[appId].score=72; CAND_DETAILS[appId].priority='Medium'; CAND_DETAILS[appId].scorePct=[70,75,72]; }
+    closeDetail();
+    setTimeout(()=>openDetail(appId),100);
+    toast('AI scoring complete. Score: 72 — Review Required.','success');
+  },2200);
+}
+
+function rdots(val,max=5) {
+  return Array.from({length:max},(_,i)=>`<div class="rdot ${i<val?'on':'off'}"></div>`).join('');
+}
+
+function showPanel() {
+  const overlay = document.getElementById('detail-overlay');
+  overlay.style.display='flex';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>overlay.classList.add('open')));
+}
+function closeDetail() {
+  const overlay = document.getElementById('detail-overlay');
+  overlay.classList.remove('open');
+  setTimeout(()=>{ overlay.style.display='none'; },250);
+}
+function maybeCloseDetail(e) {
+  if(e.target===document.getElementById('detail-overlay')) closeDetail();
+}
+
+// ═══════════════ MODALS ═══════════════
+function openAddCandidate() {
+  document.getElementById('modal-add-candidate').style.display='flex';
+  requestAnimationFrame(()=>document.getElementById('modal-add-candidate').classList.add('open'));
+}
+function openAddJob() {
+  document.getElementById('modal-add-job').style.display='flex';
+  requestAnimationFrame(()=>document.getElementById('modal-add-job').classList.add('open'));
+}
+function closeModal(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('open');
+  setTimeout(()=>el.style.display='none',180);
+}
+
+function submitCandidate() {
+  const fn = document.getElementById('c-fname').value.trim();
+  const ln = document.getElementById('c-lname').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  if(!fn||!ln||!email) { toast('First name, last name, and email are required.','error'); return; }
+  const existing = CANDIDATES.find(c=>c.email===email);
+  if(existing) { toast(`Duplicate detected: ${existing.name} already exists with this email.`,'error'); return; }
+  CANDIDATES.push({
+    id:'new-'+Date.now(),
+    name:`${fn} ${ln}`,
+    email,
+    company:document.getElementById('c-company').value||'—',
+    exp:parseFloat(document.getElementById('c-exp').value)||0,
+    skills:[],
+    location:document.getElementById('c-loc').value||'—',
+    source:document.getElementById('c-source').value,
+  });
+  closeModal('modal-add-candidate');
+  toast(`Candidate ${fn} ${ln} added. CAND-${String(CANDIDATES.length).padStart(5,'0')} created.`,'success');
+  renderCandTable();
+  document.querySelectorAll('#modal-add-candidate input, #modal-add-candidate textarea').forEach(el=>el.value='');
+}
+
+function submitJob() {
+  const title = document.getElementById('j-title').value.trim();
+  if(!title) { toast('Job title is required.','error'); return; }
+  JOBS.push({
+    title,
+    dept:document.getElementById('j-dept').value,
+    loc:document.getElementById('j-loc').value||'TBD',
+    type:document.getElementById('j-type').value,
+    salMin:parseInt(document.getElementById('j-min').value)||0,
+    salMax:parseInt(document.getElementById('j-max').value)||0,
+    skills:[],
+    level:document.getElementById('j-level').value,
+    status:'Draft',
+    close:document.getElementById('j-close').value||'TBD',
+    applied:0,shortlisted:0,offers:0,pct:0,
+  });
+  closeModal('modal-add-job');
+  toast(`Job opening "${title}" created as Draft.`,'success');
+  renderJobsGrid();
+  document.getElementById('j-title').value='';
+}
+
+function bulkScreen() {
+  const unscored = APPS.filter(a=>a.score==null&&a.status==='New');
+  if(!unscored.length) { toast('All New applications already have AI scores.','info'); return; }
+  toast(`Bulk AI screening triggered for ${unscored.length} application(s). Results incoming…`,'info');
+  setTimeout(()=>{
+    unscored.forEach(a=>{
+      const s = Math.floor(Math.random()*60)+30;
+      a.score=s; a.priority=s>=75?'High':s>=50?'Medium':'Low';
+      a.status=s>=75?'Shortlisted':s>=50?'Review Required':'Not Qualified';
+    });
+    renderAppsTable();
+    toast(`AI scoring complete. ${unscored.length} application(s) scored.`,'success');
+  },2500);
+}
+
+// ═══════════════ TOAST ═══════════════
+function toast(msg, type='info') {
+  const area = document.getElementById('toast-area');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  area.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),300); }, 3500);
+}
+
+// ═══════════════ INIT ═══════════════
+renderDashApps();
+
+// Keyboard shortcut: ESC closes panels/modals
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') {
+    closeDetail();
+    ['modal-add-candidate','modal-add-job'].forEach(closeModal);
+  }
+});
+</script>
+</body>
+</html>
